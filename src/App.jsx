@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import {
   Bar,
+  BarChart,
   CartesianGrid,
   Cell,
   Legend,

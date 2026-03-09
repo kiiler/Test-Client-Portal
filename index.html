@@ -4,80 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>HQTS TestFlow Portal</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/recharts/umd/Recharts.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   </head>
-  <body class="bg-slate-100">
+  <body>
     <div id="root"></div>
-    <script type="text/babel">
-      const { useState, useMemo } = React;
-      const { ResponsiveContainer, BarChart, Bar, CartesianGrid, XAxis, YAxis, Tooltip, PieChart, Pie, Cell, Legend, LineChart, Line } = Recharts;
-
-      const navItems = [
-        ['dashboard','Dashboard'],['request','New Test Request'],['orders','Orders'],['reports','Reports'],['compliance','Compliance Analytics'],['suppliers','Suppliers'],['integrations','Integrations'],['settings','Settings']
-      ];
-      const kpis = [['Total tests','1,284','+12% vs last quarter'],['In progress','214','48 urgent samples'],['Completed','982','94% on-time completion'],['Failed / high-risk','88','18 pending CAPA actions'],['Avg turnaround time','6.2 days','Target: < 7 days'],['Pending supplier actions','37','Missing samples/documents']];
-      const orders = [
-        ['HSE-TR-2401','Pearl Stitch Apparel Ltd.','Bangladesh','Jackets','In testing','Combined','High'],
-        ['HSE-TR-2402','EuroLeather Works SRL','Italy','Leather bags','Technical review','Chemical','Medium'],
-        ['HSE-TR-2403','Anatolia Accessories A.S.','Turkey','Belts','Sample in transit','Physical','Low'],
-        ['HSE-TR-2404','Shenzhen Smart Footwear Co.','China','Sneakers','Report issued','Combined','High']
-      ];
-      const reports = [
-        ['RPT-93831',"Men's Softshell Jacket",'Pearl Stitch Apparel Ltd.','Bangladesh','Jackets','Combined','2026-01-18','Pass'],
-        ['RPT-93824',"Women's Leather Tote",'EuroLeather Works SRL','Italy','Leather bags','Chemical','2026-01-16','Fail'],
-        ['RPT-93819','Running Sneaker Model F8','Shenzhen Smart Footwear Co.','China','Sneakers','Physical','2026-01-15','Under Review'],
-        ['RPT-93811','Retail Polybag 45μ','Delta Pack Vietnam','Vietnam','Polybags','Chemical','2026-01-12','At Risk'],
-      ];
-      const charts = {
-        country:[{name:'China',value:322},{name:'India',value:206},{name:'Bangladesh',value:189},{name:'Vietnam',value:174},{name:'Turkey',value:143},{name:'Italy',value:127},{name:'Germany',value:123}],
-        product:[{name:'Jackets',tests:214},{name:'Trousers',tests:175},{name:'Sneakers',tests:163},{name:'Leather bags',tests:140},{name:'Belts',tests:122},{name:'Polybags',tests:98},{name:'Cartons',tests:92}],
-        passFail:[{name:'Pass',value:78},{name:'Fail',value:11},{name:'Under Review',value:7},{name:'At Risk',value:4}],
-      }
-      const trendData=[{month:'Aug',pass:124,fail:22},{month:'Sep',pass:133,fail:18},{month:'Oct',pass:129,fail:21},{month:'Nov',pass:146,fail:19},{month:'Dec',pass:152,fail:14},{month:'Jan',pass:158,fail:16}];
-      const failSupplier=[{supplier:'Pearl Stitch',fails:7},{supplier:'Shenzhen Footwear',fails:6},{supplier:'Delta Pack Vietnam',fails:5},{supplier:'Anatolia Accessories',fails:4}];
-      const supplierPerf=[['Pearl Stitch Apparel Ltd.',184,'5.4%','6.1 days',2,'Azo dyes in trims'],['EuroLeather Works SRL',162,'3.1%','5.8 days',1,'Chromium VI alert'],['Shenzhen Smart Footwear Co.',228,'6.0%','6.9 days',3,'Phthalates in soles'],['Delta Pack Vietnam',119,'7.5%','7.2 days',4,'Heavy metals in print ink']];
-      const colors=['#155e75','#0f766e','#64748b','#f59e0b'];
-      const roleViews=['HSE Quality / Compliance Manager','Supplier / Factory User','HQTS Lab Coordinator','HQTS Technical Reviewer'];
-
-      const Card = ({title, children}) => (
-        <section className="rounded-xl bg-white p-5 shadow" style={{boxShadow:'0 4px 14px rgba(15,23,42,0.08)'}}>
-          <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-slate-500">{title}</h3>{children}
-        </section>
-      );
-
-      function App(){
-        const [active,setActive]=useState('dashboard');
-        const [role,setRole]=useState(roleViews[0]);
-        const [selectedReport,setSelectedReport]=useState(reports[0]);
-        const pageTitle=useMemo(()=>navItems.find(n=>n[0]===active)?.[1]||'Dashboard',[active]);
-        return <div className="flex min-h-screen bg-slate-100">
-          <aside className="w-72 border-r border-slate-200 bg-white p-6"><div className="mb-8"><p className="text-sm text-slate-500">HQTS</p><h1 className="text-xl font-bold text-slate-800">TestFlow Portal</h1><p className="text-xs mt-1 text-slate-500">Proposal Demo for HSE</p></div><nav className="space-y-1">{navItems.map(([k,l])=><button key={k} onClick={()=>setActive(k)} className={`flex w-full items-center rounded-lg px-3 py-2 text-left text-sm ${active===k?'bg-slate-900 text-white':'text-slate-600 hover:bg-slate-100'}`}>{l}</button>)}</nav></aside>
-          <main className="flex-1 p-8">
-            <header className="mb-6 flex flex-wrap items-center justify-between gap-4"><div><h2 className="text-2xl font-bold text-slate-900">{pageTitle}</h2><p className="text-sm text-slate-500">Framework-ready laboratory workflow for Home Shopping Europe GmbH</p></div><select value={role} onChange={e=>setRole(e.target.value)} className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm">{roleViews.map(r=><option key={r}>{r}</option>)}</select></header>
-
-            {active==='dashboard' && <div className="space-y-6"><div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">{kpis.map(([l,v,n])=><Card key={l} title={l}><p className="text-2xl font-semibold text-slate-900">{v}</p><p className="mt-1 text-sm text-slate-500">{n}</p></Card>)}</div><div className="grid gap-6 lg:grid-cols-2"><Card title="Tests by country"><ResponsiveContainer width="100%" height={220}><BarChart data={charts.country}><CartesianGrid strokeDasharray="3 3"/><XAxis dataKey="name"/><YAxis/><Tooltip/><Bar dataKey="value" fill="#155e75"/></BarChart></ResponsiveContainer></Card><Card title="Pass / fail ratio"><ResponsiveContainer width="100%" height={220}><PieChart><Pie data={charts.passFail} dataKey="value" nameKey="name" outerRadius={75}>{charts.passFail.map((_,i)=><Cell key={i} fill={colors[i]} />)}</Pie><Tooltip/><Legend/></PieChart></ResponsiveContainer></Card><Card title="Tests by product group"><ResponsiveContainer width="100%" height={220}><BarChart data={charts.product}><CartesianGrid strokeDasharray="3 3"/><XAxis dataKey="name"/><YAxis/><Tooltip/><Bar dataKey="tests" fill="#0f766e"/></BarChart></ResponsiveContainer></Card><Card title="Recent compliance alerts"><ul className="space-y-3 text-sm"><li className="rounded-lg bg-rose-50 p-3 text-rose-800">Chromium VI above threshold in leather strap batch IT-33</li><li className="rounded-lg bg-rose-50 p-3 text-rose-800">Phthalates detected in outsole compound CN-21</li><li className="rounded-lg bg-rose-50 p-3 text-rose-800">Formaldehyde variance in stitched trim BD-89</li></ul></Card></div></div>}
-
-            {active==='request' && <Card title="Supplier self-booking | standardized test intake"><div className="grid gap-4 md:grid-cols-2">{['Supplier Name','Production Country','Product Group','Product Description','Season / PO / Ref. Number','Requested Test Scope','Test Type (Chemical / Physical / Combined)','Urgency Level'].map(f=><label key={f} className="text-sm">{f}<input className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2" placeholder={`Enter ${f.toLowerCase()}`} /></label>)}<label className="md:col-span-2 text-sm">Upload Supporting Files<input type="file" className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2" /></label><label className="md:col-span-2 text-sm">Remarks<textarea className="mt-1 h-24 w-full rounded-lg border border-slate-300 px-3 py-2"/></label></div><div className="mt-4 flex items-center justify-between rounded-lg bg-slate-50 p-4 text-sm text-slate-600"><span>Automated checks, profile autofill, scope templates, and notification workflows reduce daily admin workload.</span><button className="rounded-lg bg-slate-900 px-4 py-2 font-medium text-white">Submit Request</button></div></Card>}
-
-            {active==='orders' && <Card title="End-to-end test order tracking"><div className="mb-4 grid gap-3 md:grid-cols-5">{['Country','Supplier','Product Group','Status','Date Range'].map(f=><input key={f} className="rounded-lg border border-slate-300 px-3 py-2 text-sm" placeholder={`Filter by ${f}`}/> )}</div><div className="overflow-x-auto"><table className="w-full text-left text-sm"><thead className="bg-slate-50 text-slate-500"><tr>{['Order','Supplier','Country','Product','Status','Scope','Urgency'].map(h=><th key={h} className="p-3 font-medium">{h}</th>)}</tr></thead><tbody>{orders.map(o=><tr key={o[0]} className="border-b border-slate-100">{o.map((v,i)=><td key={i} className="p-3">{v}</td>)}</tr>)}</tbody></table></div></Card>}
-
-            {active==='reports' && <div className="grid gap-6 lg:grid-cols-3"><div className="lg:col-span-2"><Card title="Digital report repository"><input className="mb-4 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" placeholder="Search by report #, supplier, product, country..."/><div className="overflow-x-auto"><table className="w-full text-left text-sm"><thead className="bg-slate-50 text-slate-500"><tr>{['Report #','Product','Supplier','Country','Group','Type','Issue Date','Result'].map(h=><th key={h} className="p-2 font-medium">{h}</th>)}</tr></thead><tbody>{reports.map(r=><tr key={r[0]} onClick={()=>setSelectedReport(r)} className="cursor-pointer border-b border-slate-100 hover:bg-slate-50">{r.map((c,i)=><td key={i} className="p-2">{i===7?<span className="rounded-full bg-slate-100 px-2 py-1 text-xs font-semibold">{c}</span>:c}</td>)}</tr>)}</tbody></table></div></Card></div><Card title="Report preview"><div className="space-y-3 text-sm"><div className="aspect-video rounded-lg bg-slate-200 p-2 text-xs text-slate-500">Specimen photo placeholder</div><p><b>{selectedReport[0]}</b> | {selectedReport[1]}</p><p><b>English Summary:</b> Sample tested against HSE RSL v2026 and physical matrix, with clear compliance interpretation.</p><p><b>Compliance conclusion:</b> {selectedReport[7]}</p><p><b>Marketability / RSL assessment:</b> EU marketability review completed with actionable lab comments.</p><p><b>Tested components:</b> Main fabric, print, zipper puller, outsole rubber, packaging ink.</p></div></Card></div>}
-
-            {active==='compliance' && <div className="space-y-6"><div className="grid gap-6 lg:grid-cols-2"><Card title="Pass/fail trend over time"><ResponsiveContainer width="100%" height={260}><LineChart data={trendData}><CartesianGrid strokeDasharray="3 3"/><XAxis dataKey="month"/><YAxis/><Tooltip/><Legend/><Line type="monotone" dataKey="pass" stroke="#0f766e" strokeWidth={2}/><Line type="monotone" dataKey="fail" stroke="#ef4444" strokeWidth={2}/></LineChart></ResponsiveContainer></Card><Card title="Failures by supplier"><ResponsiveContainer width="100%" height={260}><BarChart data={failSupplier}><CartesianGrid strokeDasharray="3 3"/><XAxis dataKey="supplier"/><YAxis/><Tooltip/><Bar dataKey="fails" fill="#ef4444"/></BarChart></ResponsiveContainer></Card></div><Card title="Risk matrix & recurring non-compliance issues"><div className="grid gap-4 md:grid-cols-3">{[['Heavy metals','High','China / Vietnam packaging suppliers'],['Azo dyes','Medium','Bangladesh apparel trims'],['Phthalates','High','Footwear outsole compounds'],['Formaldehyde','Medium','Textile finishing processes'],['pH imbalance','Low','Dyed fabric lots'],['Chromium VI','High','Leather goods lines']].map(([issue,risk,area])=><div key={issue} className="rounded-lg border border-slate-200 p-4"><p className="font-semibold">{issue}</p><p className="my-1 text-xs">{risk} Risk</p><p className="text-xs text-slate-500">{area}</p></div>)}</div></Card></div>}
-
-            {active==='suppliers' && <Card title="Supplier performance management"><div className="overflow-x-auto"><table className="w-full text-left text-sm"><thead className="bg-slate-50 text-slate-500"><tr>{['Supplier','Total Tests','Fail Rate','Avg TAT','Open CAPA','Recent Issue'].map(h=><th key={h} className="p-3 font-medium">{h}</th>)}</tr></thead><tbody>{supplierPerf.map(r=><tr key={r[0]} className="border-b border-slate-100">{r.map((c,i)=><td key={i} className="p-3">{c}</td>)}</tr>)}</tbody></table></div></Card>}
-
-            {active==='integrations' && <div className="grid gap-6 lg:grid-cols-2"><Card title="API integration capabilities"><ul className="space-y-3 text-sm">{['API-based data exchange','Test request import from HSE systems','Bi-directional status sync','Report metadata sync','Bulk export (CSV/PDF/JSON)','Webhook alerting for failed reports'].map(i=><li key={i} className="rounded-lg bg-slate-50 p-3">{i}</li>)}</ul></Card><Card title="Phased implementation approach"><ol className="space-y-3 text-sm"><li className="rounded-lg border p-3"><b>Phase 1:</b> Pilot onboarding + hybrid manual/API setup.</li><li className="rounded-lg border p-3"><b>Phase 2:</b> Full supplier rollout + dashboards for HSE and HQTS teams.</li><li className="rounded-lg border p-3"><b>Phase 3:</b> Automated reporting, corrective actions, and governance KPIs.</li></ol></Card></div>}
-
-            {active==='settings' && <Card title="Program settings"><p className="text-sm text-slate-600">Configure framework price list mapping, RSL versions, report templates, SLA targets, and role permissions for long-term testing program management.</p></Card>}
-          </main>
-        </div>
-      }
-      ReactDOM.createRoot(document.getElementById('root')).render(<App />)
-    </script>
+    <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
