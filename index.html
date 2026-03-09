@@ -14,7 +14,8 @@
     <div id="root"></div>
     <script type="text/babel">
       const { useState, useMemo } = React;
-      const { ResponsiveContainer, BarChart, Bar, CartesianGrid, XAxis, YAxis, Tooltip, PieChart, Pie, Cell, Legend, LineChart, Line } = Recharts;
+      const RechartsLib = window.Recharts || window.ReCharts;
+      const { ResponsiveContainer, BarChart, Bar, CartesianGrid, XAxis, YAxis, Tooltip, PieChart, Pie, Cell, Legend, LineChart, Line } = RechartsLib;
 
       const navItems = [
         ['dashboard','Dashboard'],['request','New Test Request'],['orders','Orders'],['reports','Reports'],['compliance','Compliance Analytics'],['suppliers','Suppliers'],['integrations','Integrations'],['settings','Settings']
